@@ -30,11 +30,13 @@ public class HotelSearch implements myParameter {
     @Test
     public void searchHotel() {
 
-
         driver.manage().timeouts().implicitlyWait(10L, TimeUnit.SECONDS);
         driver.findElement(By.xpath("//span[text()='Search by Hotel or City Name']")).click();
         driver.findElement(By.xpath("//div[@id='select2-drop']//input")).sendKeys("Dubai");
         driver.findElement(By.xpath("//span[@class='select2-match' and text()='Dubai']")).click();
+
+        driver.findElement(By.name("checkin")).sendKeys("17/09/2024");
+        driver.findElement(By.name("checkout")).sendKeys("27/09/2024");
     }
 
     private void waitForElementToExist(By locator) {
