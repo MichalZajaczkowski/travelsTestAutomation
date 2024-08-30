@@ -6,6 +6,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+import utils.BaseTestMethod;
 import utils.DriverFactory;
 import utils.DriverType;
 import utils.myParameter;
@@ -15,15 +16,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Random;
 
-public class SearchHotelWithoutCity implements myParameter {
-
-    WebDriver driver;
-
-    @BeforeTest
-    public void beforeTest() {
-        driver = DriverFactory.getDriver(DriverType.CHROME);
-        driver.get(URL_KURS_SELENIUM_DEMO);
-    }
+public class SearchHotelWithoutCity extends BaseTestMethod implements myParameter {
 
     @Test
     public void SearchHotelWithoutCityTest() {

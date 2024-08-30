@@ -7,6 +7,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+import utils.BaseTestMethod;
 import utils.DriverFactory;
 import utils.DriverType;
 import utils.myParameter;
@@ -15,9 +16,8 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Random;
 
-public class SignUpTest implements myParameter {
+public class SignUpTest extends BaseTestMethod implements myParameter {
 
-    WebDriver driver;
 
     private static final String[] FIRST_NAMES = {"John", "Michael", "Sarah", "Jessica", "David", "Emily", "James", "Sophie"};
     private static final String[] LAST_NAMES = {"Smith", "Johnson", "Williams", "Brown", "Jones", "Miller", "Davis", "Garcia"};
@@ -30,12 +30,6 @@ public class SignUpTest implements myParameter {
 
     private static final String DOMAIN = "@example.com";
     private static final Random random = new Random();
-
-    @BeforeTest
-    public void beforeTest() {
-        driver = DriverFactory.getDriver(DriverType.CHROME);
-        driver.get(URL_KURS_SELENIUM_DEMO);
-    }
 
     @Test
     public void singUp() {

@@ -1,36 +1,30 @@
 package org.example.travelsTestAutomation;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.ElementNotInteractableException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import org.testng.ITestResult;
+import org.testng.annotations.*;
+import utils.BaseTestMethod;
 import utils.DriverFactory;
 import utils.DriverType;
 import utils.myParameter;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-public class HotelSearch implements myParameter {
-
-    WebDriver driver;
-
-    @BeforeTest
-    public void beforeTest() {
-        driver = DriverFactory.getDriver(DriverType.CHROME);
-        driver.get(URL_KURS_SELENIUM_DEMO);
-    }
+public class HotelSearch extends BaseTestMethod implements myParameter {
 
     @Test
     public void searchHotel() {
@@ -42,7 +36,7 @@ public class HotelSearch implements myParameter {
 
         //driver.findElement(By.name("checkin")).sendKeys("17/09/2024");
         driver.findElement(By.name("checkin")).click();
-        driver.findElements(By.xpath("//td[@class='day ' and text()='28']"))
+        driver.findElements(By.xpath("//td[@class='day ' and text()='31']"))
                 .stream()
                 .filter(WebElement::isDisplayed)
                 .findFirst()
@@ -100,18 +94,19 @@ public class HotelSearch implements myParameter {
 
     @Test
     public void searchHotel1() {
-
+        FluentWait<WebDriver> wait = new FluentWait<>(driver);
         driver.manage().timeouts().implicitlyWait(10L, TimeUnit.SECONDS);
         driver.findElement(By.xpath("//span[text()='Search by Hotel or City Name']")).click();
         driver.findElement(By.xpath("//div[@id='select2-drop']//input")).sendKeys("Dubai");
         driver.findElement(By.xpath("//span[@class='select2-match' and text()='Dubai']")).click();
 
         // Ustaw daty checkin i checkout
-        LocalDate today = getTodayDate();
+        LocalDate today = LocalDate.now();
         LocalDate checkinDate = getRandomCheckinDate(today);
         LocalDate checkoutDate = getRandomCheckoutDate(checkinDate);
 
-        driver.findElement(By.name("checkin")).click();
+        WebElement checkinElement = wait.until(ExpectedConditions.elementToBeClickable(By.name("checkin")));
+        checkinElement.click();
         selectDate(checkinDate.getDayOfMonth());
 
         WebElement checkOutElement = driver.findElement(By.name("checkout"));
@@ -129,19 +124,23 @@ public class HotelSearch implements myParameter {
         // Pobierz listę hoteli
         List<WebElement> hotelElements = driver.findElements(By.xpath("//h4[contains(@class,'list_title')]//b"));
 
-        // Wybierz losowy hotel
+        // Wybierz losowy hotel i asercje
         if (!hotelElements.isEmpty()) {
             Random random = new Random();
             WebElement randomHotel = hotelElements.get(random.nextInt(hotelElements.size()));
+            String selectedHotelName = randomHotel.getText();
             System.out.println("Wybrany hotel: " + randomHotel.getAttribute("textContent"));
+
+            // Kliknij wybrany hotel
             randomHotel.click();
+
+            // Asercje
+            Assert.assertNotNull(selectedHotelName, "Nazwa wybranego hotelu jest pusta.");
+            Assert.assertFalse(hotelElements.isEmpty(), "Lista hoteli jest pusta.");
         } else {
             System.out.println("Nie znaleziono hoteli.");
+            Assert.fail("Brak hoteli w wynikach wyszukiwania.");
         }
-    }
-
-    private LocalDate getTodayDate() {
-        return LocalDate.now();
     }
 
     private LocalDate getRandomCheckinDate(LocalDate today) {
