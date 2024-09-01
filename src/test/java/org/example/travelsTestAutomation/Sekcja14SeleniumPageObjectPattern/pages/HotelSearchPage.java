@@ -60,7 +60,7 @@ public class HotelSearchPage extends BaseTestMethod implements myParameter {
         this.driver = driver;
     }
 
-    public void setCity(String cityName) {
+    public HotelSearchPage setCity(String cityName) {
         wait.until(ExpectedConditions.elementToBeClickable(searchHotelSpan)).click();
         WebElement searchInput = wait.until(ExpectedConditions.visibilityOf(searchHotelInput));
         searchInput.sendKeys(cityName);
@@ -69,21 +69,21 @@ public class HotelSearchPage extends BaseTestMethod implements myParameter {
         By hotelMatchLocator = By.xpath(xpathHotelMatch);
         wait.until(ExpectedConditions.presenceOfElementLocated(hotelMatchLocator));
         wait.until(ExpectedConditions.elementToBeClickable(hotelMatchLocator)).click();
+        return this;
     }
 
-    public void setDate(String checkIn, String checkOut) {
+    public HotelSearchPage setDate(String checkIn, String checkOut) {
         wait.until(ExpectedConditions.elementToBeClickable(checkinInput)).sendKeys(checkIn);
         wait.until(ExpectedConditions.elementToBeClickable(checkOutInput)).sendKeys(checkOut);
+        return this;
     }
 
-    public void setTravellers(Integer adultsToChange, Integer childrenToChange) {
+    public HotelSearchPage setTravellers(Integer adultsToChange, Integer childrenToChange) {
         travellersInput.click();
+        addTraveler(adultPlusBtn, adultMinusBtn, adultsToChange);// Obsługa dorosłych
+        addTraveler(childPlusBtn, childMinusBtn, childrenToChange); // Obsługa dzieci
 
-        // Obsługa dorosłych
-        addTraveler(adultPlusBtn, adultMinusBtn, adultsToChange);
-
-        // Obsługa dzieci
-        addTraveler(childPlusBtn, childMinusBtn, childrenToChange);
+        return this;
     }
 
     private void addTraveler(WebElement plusBtn, WebElement minusBtn, Integer numberOfTravelers) {
@@ -95,15 +95,17 @@ public class HotelSearchPage extends BaseTestMethod implements myParameter {
         }
     }
 
-    public void performSearch() {
+    public ResultsHotelPage performSearch() {
         wait.until(ExpectedConditions.elementToBeClickable(searchButton)).click();
+        return new ResultsHotelPage(driver);
     }
 
-    public void openNewAccount() {
+    public SingUpPage openNewAccount() {
         myAccountLink.stream()
                 .filter(WebElement::isDisplayed)
                 .findFirst()
                 .ifPresent(WebElement::click);
         signUpLink.get(1).click();
+        return new SingUpPage(driver);
     }
 }

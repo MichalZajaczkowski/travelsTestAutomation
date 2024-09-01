@@ -1,6 +1,5 @@
 package org.example.travelsTestAutomation.Sekcja14SeleniumPageObjectPattern.test;
 
-import org.example.travelsTestAutomation.Sekcja14SeleniumPageObjectPattern.model.User;
 import org.example.travelsTestAutomation.Sekcja14SeleniumPageObjectPattern.pages.HotelSearchPage;
 import org.example.travelsTestAutomation.Sekcja14SeleniumPageObjectPattern.pages.LoggedUserPage;
 import org.example.travelsTestAutomation.Sekcja14SeleniumPageObjectPattern.pages.SingUpPage;
@@ -30,31 +29,28 @@ public class SignUpPOPTest extends BaseTestMethod implements myParameter {
 
     @Test
     public void singUpTest() {
-
-        HotelSearchPage hotelSearchPage = new HotelSearchPage(driver);
         SingUpPage singUpPage = new SingUpPage(driver);
-        LoggedUserPage loggedUserPage = new LoggedUserPage(driver);
-        hotelSearchPage.openNewAccount();
 
         String firstName = generateRandomFirstName();
         String lastName = generateRandomLastName();
-
-        singUpPage.setFirstname(firstName);
-        singUpPage.setLastNames(lastName);
-        singUpPage.setPhone(generateRandomPhoneNumber());
-        singUpPage.setEmail(generateRandomEmail());
-
-        // Wygenerowanie losowego hasła i przypisanie do zmiennej
         String password = generateRandomPassword();
-        singUpPage.setPassword(password);
-        singUpPage.setConfirmPassword(password);
+
+        LoggedUserPage loggedUserPage = new HotelSearchPage(driver)
+                .openNewAccount()
+                .setFirstname(firstName)
+                .setLastNames(lastName)
+                .setPhone(generateRandomPhoneNumber())
+                .setEmail(generateRandomEmail())
+                .setPassword(password)
+                .setConfirmPassword(password)
+                .singUp();
 
         // Pobranie wartości haseł
         String passwordValue = singUpPage.getPasswordValue();
         String confirmPasswordValue = singUpPage.getConfirmPasswordValue();
         Assert.assertEquals(passwordValue, confirmPasswordValue, "Passwords do not match!");
 
-        singUpPage.singUpBtnClick();
+        singUpPage.singUp();
 
         //WebElement textH3 = waitForElementToExist(By.xpath("//h3[@class='RTL']"));
         loggedUserPage.waitForRtl();
@@ -62,97 +58,12 @@ public class SignUpPOPTest extends BaseTestMethod implements myParameter {
         Assert.assertTrue(textH3.contains("Hi, " + firstName + " " + lastName), "Tekst powitalny nie zawiera poprawnego imienia i nazwiska.");
         Assert.assertEquals(textH3, "Hi, " + firstName + " " + lastName, "jest ok");
     }
-
-    @Test
-    public void singUpTest2() {
-
-        HotelSearchPage hotelSearchPage = new HotelSearchPage(driver);
-        SingUpPage singUpPage = new SingUpPage(driver);
-        LoggedUserPage loggedUserPage = new LoggedUserPage(driver);
-        hotelSearchPage.openNewAccount();
-
-        singUpPage.filSingUpForm();
-
-        //WebElement textH3 = waitForElementToExist(By.xpath("//h3[@class='RTL']"));
-        loggedUserPage.waitForRtl();
-        String textH3 = loggedUserPage.rtl();
-        Assert.assertTrue(textH3.contains("Hi, "), "Tekst powitalny nie zawiera poprawnego imienia i nazwiska.");
-        Assert.assertEquals(textH3, "Hi, ", "jest ok");
-    }
-
-    @Test
-    public void singUpTest3() {
-
-
-        HotelSearchPage hotelSearchPage = new HotelSearchPage(driver);
-        SingUpPage singUpPage = new SingUpPage(driver);
-        LoggedUserPage loggedUserPage = new LoggedUserPage(driver);
-        hotelSearchPage.openNewAccount();
-
-        singUpPage.filSingUpForm2();
-
-        //WebElement textH3 = waitForElementToExist(By.xpath("//h3[@class='RTL']"));
-        loggedUserPage.waitForRtl();
-        String textH3 = loggedUserPage.rtl();
-        Assert.assertTrue(textH3.contains("Hi, "), "Tekst powitalny nie zawiera poprawnego imienia i nazwiska.");
-        Assert.assertEquals(textH3, "Hi, ", "jest ok");
-    }
-
-    @Test
-    public void singUpTest4() {
-
-
-        HotelSearchPage hotelSearchPage = new HotelSearchPage(driver);
-        SingUpPage singUpPage = new SingUpPage(driver);
-        LoggedUserPage loggedUserPage = new LoggedUserPage(driver);
-        hotelSearchPage.openNewAccount();
-        String firstName = generateRandomFirstName();
-        String lastName = generateRandomLastName();
-        String password = generateRandomPassword();
-        singUpPage.filSingUpForm3(firstName, lastName, generateRandomPhoneNumber(), generateRandomEmail(), password);
-
-        //WebElement textH3 = waitForElementToExist(By.xpath("//h3[@class='RTL']"));
-        loggedUserPage.waitForRtl();
-        String textH3 = loggedUserPage.rtl();
-        Assert.assertTrue(textH3.contains("Hi, " + firstName + " " + lastName), "Tekst powitalny nie zawiera poprawnego imienia i nazwiska.");
-        Assert.assertEquals(textH3, "Hi, " + firstName + " " + lastName, "jest ok");
-    }
-
-    @Test
-    public void singUpTest5() {
-
-
-        HotelSearchPage hotelSearchPage = new HotelSearchPage(driver);
-        SingUpPage singUpPage = new SingUpPage(driver);
-        LoggedUserPage loggedUserPage = new LoggedUserPage(driver);
-        User user = new User();
-
-        hotelSearchPage.openNewAccount();
-        String firstName = generateRandomFirstName();
-        String lastName = generateRandomLastName();
-        String password = generateRandomPassword();
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setPhone(generateRandomPhoneNumber());
-        user.setEmail(generateRandomEmail());
-        user.setPassword(password);
-        singUpPage.filSingUpForm4(user);
-
-        loggedUserPage.waitForRtl();
-        String textH3 = loggedUserPage.rtl();
-        Assert.assertTrue(textH3.contains("Hi, " + user.getFirstName() + " " + user.getLastName()), "Tekst powitalny nie zawiera poprawnego imienia i nazwiska.");
-        Assert.assertEquals(textH3, "Hi, " + user.getFirstName() + " " + user.getLastName(), "jest ok");
-    }
-
 
     @Test
     public void testRegisterWithoutDate() {
 
-        HotelSearchPage hotelSearchPage = new HotelSearchPage(driver);
-        SingUpPage singUpPage = new SingUpPage(driver);
-
-        hotelSearchPage.openNewAccount();
-        singUpPage.singUpBtnClick();
+        SingUpPage singUpPage = new HotelSearchPage(driver).openNewAccount();
+        singUpPage.singUp();
 
 
         singUpPage.waitForResultSignupVisibility();
@@ -175,30 +86,24 @@ public class SignUpPOPTest extends BaseTestMethod implements myParameter {
 
     @Test
     public void emailValidationTest() {
-        HotelSearchPage hotelSearchPage = new HotelSearchPage(driver);
-        SingUpPage singUpPage = new SingUpPage(driver);
-        LoggedUserPage loggedUserPage = new LoggedUserPage(driver);
-        hotelSearchPage.openNewAccount();
-
         String firstName = generateRandomFirstName();
         String lastName = generateRandomLastName();
-
-        singUpPage.setFirstname(firstName);
-        singUpPage.setLastNames(lastName);
-        singUpPage.setPhone(generateRandomPhoneNumber());
-        singUpPage.setEmail("errorMail.pl");
-
-        // Wygenerowanie losowego hasła i przypisanie do zmiennej
         String password = generateRandomPassword();
-        singUpPage.setPassword(password);
-        singUpPage.setConfirmPassword(password);
 
+        SingUpPage singUpPage = new HotelSearchPage(driver)
+                .openNewAccount()
+                .setFirstname(firstName)
+                .setLastNames(lastName)
+                .setPhone(generateRandomPhoneNumber())
+                .setEmail("errorMail.pl")
+                .setPassword(password)
+                .setConfirmPassword(password);
         // Pobranie wartości haseł
         String passwordValue = singUpPage.getPasswordValue();
         String confirmPasswordValue = singUpPage.getConfirmPasswordValue();
         Assert.assertEquals(passwordValue, confirmPasswordValue, "Passwords do not match!");
 
-        singUpPage.singUpBtnClick();
+        singUpPage.singUp();
 
         singUpPage.waitForResultSignupVisibility();
         // Poczekaj na widoczność elementów błędów

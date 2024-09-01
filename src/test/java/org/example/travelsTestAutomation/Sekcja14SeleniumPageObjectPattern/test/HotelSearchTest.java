@@ -80,18 +80,67 @@ public class HotelSearchTest extends BaseTestMethod implements myParameter {
     }
 
     @Test
-    public void searchHotelWithoutNameTest() {
+    public void searchHotel2() {
         FluentWait<WebDriver> wait = new FluentWait<>(driver);
-        ResultsHotelPage resultsHotelPage = new ResultsHotelPage(driver);
         HotelSearchPage hotelSearchPage = new HotelSearchPage(driver);
+        ResultsHotelPage resultsHotelPage = new ResultsHotelPage(driver);
 
         LocalDate today = LocalDate.now();
         String checkinDate = getRandomCheckinDate(today);
         String checkoutDate = getRandomCheckoutDate(LocalDate.parse(checkinDate, formatter));
 
-        hotelSearchPage.setDate(checkinDate, checkoutDate);
-        hotelSearchPage.setTravellers(-1, 1);
-        hotelSearchPage.performSearch();
+        List<String> hotelNameList = hotelSearchPage.setCity("Dubai")
+                .setDate(checkinDate, checkoutDate)
+                .setTravellers(-1, 2)
+                .performSearch().getHotelList();
+
+
+        //TODO: assertEquals equals do wynamicznej weryfikacji
+        Assert.assertEquals("Jumeirah Beach Hotel", hotelNameList.getFirst());
+        Assert.assertEquals("Oasis Beach Tower", hotelNameList.get(1));
+        Assert.assertEquals("Rose Rayhaan Rotana", hotelNameList.get(2));
+        Assert.assertEquals("Hyatt Regency Perth", hotelNameList.getLast());
+
+        // Pobierz listę hoteli
+        List<WebElement> hotelElements = resultsHotelPage.getHotelList1();
+
+        // Wybierz losowy hotel
+        if (!hotelElements.isEmpty()) {
+            Random random = new Random();
+            WebElement randomHotel = hotelElements.get(random.nextInt(hotelElements.size()));
+            String selectedHotelName = randomHotel.getAttribute("textContent").trim().toUpperCase();
+            System.out.println("Wybrany hotel: " + selectedHotelName);
+            wait.until(ExpectedConditions.elementToBeClickable(randomHotel)).click();
+
+            // Poczekaj na załadowanie strony z informacjami o hotelu (opcjonalne)
+            driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+
+            HotelDetailsPage hotelDetailsPage = new HotelDetailsPage(driver);
+            String hotelNameOnPage = hotelDetailsPage.chooseHotelDetails();
+
+            // Porównaj nazwy
+            if (selectedHotelName.equals(hotelNameOnPage)) {
+                System.out.println("Nazwa hotelu zgadza się: " + hotelNameOnPage);
+                Assert.assertEquals(hotelNameOnPage, selectedHotelName, "spodziewałem sie: " + hotelNameOnPage + " a jest: " + selectedHotelName);
+            } else {
+                System.out.println("Nazwa hotelu nie zgadza się! Oczekiwana: " + selectedHotelName + ", Znaleziona: " + hotelNameOnPage);
+            }
+        } else {
+            System.out.println("Nie znaleziono hoteli.");
+        }
+    }
+
+    @Test
+    public void searchHotelWithoutNameTest() {
+        FluentWait<WebDriver> wait = new FluentWait<>(driver);
+        LocalDate today = LocalDate.now();
+        String checkinDate = getRandomCheckinDate(today);
+        String checkoutDate = getRandomCheckoutDate(LocalDate.parse(checkinDate, formatter));
+
+        ResultsHotelPage resultsHotelPage = new HotelSearchPage(driver)
+                .setDate(checkinDate, checkoutDate)
+                .setTravellers(-1, 1)
+                .performSearch();
 
         WebElement resultHeading = wait.until(ExpectedConditions.visibilityOf(resultsHotelPage.resultHeading));
         Assert.assertTrue(resultHeading.isDisplayed());
