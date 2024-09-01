@@ -22,12 +22,12 @@ public class BaseTestMethod implements myParameter{
         driver.get(URL_KURS_SELENIUM_DEMO);
     }
 
-//    @AfterMethod
-//    public void tearDown() {
-//        if (driver != null) {
-//            driver.quit();
-//        }
-//    }
+    @AfterMethod
+    public void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
+    }
 
     @AfterMethod
     public void takeScreenShotOnFailure(ITestResult testResult) throws IOException {
