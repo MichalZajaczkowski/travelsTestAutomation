@@ -30,11 +30,12 @@ public class HotelSearchTest extends BaseTestMethod implements myParameter {
     public void searchHotel() {
         FluentWait<WebDriver> wait = new FluentWait<>(driver);
         HotelSearchPage hotelSearchPage = new HotelSearchPage(driver);
-        hotelSearchPage.setCity("Dubai");
+
         LocalDate today = LocalDate.now();
         String checkinDate = getRandomCheckinDate(today);
         String checkoutDate = getRandomCheckoutDate(LocalDate.parse(checkinDate, formatter));
 
+        hotelSearchPage.setCity("Dubai");
         hotelSearchPage.setDate(checkinDate, checkoutDate);
         hotelSearchPage.setTravellers(-1, 2);
         hotelSearchPage.performSearch();

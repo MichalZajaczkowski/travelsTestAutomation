@@ -11,6 +11,7 @@ import utils.BaseTestMethod;
 import utils.myParameter;
 
 import java.time.Duration;
+import java.util.List;
 
 public class HotelSearchPage extends BaseTestMethod implements myParameter {
 
@@ -46,6 +47,12 @@ public class HotelSearchPage extends BaseTestMethod implements myParameter {
 
     @FindBy(xpath = "(//button[text()=' Search'])")
     private WebElement searchButton;
+
+    @FindBy(xpath = "//li[@id='li_myaccount']")
+    private List<WebElement> myAccountLink;
+
+    @FindBy(xpath = "//a[text()='  Sign Up']")
+    private List<WebElement> signUpLink;
 
     public HotelSearchPage(WebDriver driver) {
         PageFactory.initElements(driver, this);
@@ -90,5 +97,13 @@ public class HotelSearchPage extends BaseTestMethod implements myParameter {
 
     public void performSearch() {
         wait.until(ExpectedConditions.elementToBeClickable(searchButton)).click();
+    }
+
+    public void openNewAccount() {
+        myAccountLink.stream()
+                .filter(WebElement::isDisplayed)
+                .findFirst()
+                .ifPresent(WebElement::click);
+        signUpLink.get(1).click();
     }
 }
