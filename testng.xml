@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Travellers">
+
+    <!-- Test konfiguracja dla "Hotel Search Test" -->
+    <test name="Hotel Search Test" thread-count="3" parallel="methods">
+        <classes>
+            <class name="org.example.travelsTestAutomation.Sekcja14SeleniumPageObjectPattern.test.HotelSearchTest"/>
+        </classes>
+    </test>
+
+    <!-- Test konfiguracja dla "Sign Up Test" -->
+    <test name="Sign Up Test" thread-count="3" parallel="methods">
+        <classes>
+            <class name="org.example.travelsTestAutomation.Sekcja14SeleniumPageObjectPattern.test.SignUpPOPTest"/>
+        </classes>
+    </test>
+
+</suite>
